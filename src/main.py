@@ -18,7 +18,7 @@ import encoder_agena_chiu
 import motor_agena_chiu
 import controller_agena_chiu
 import utime
-
+import print_task
 # def task1_fun ():
 #     """!
 #     Task which puts things into a share and a queue.
@@ -34,42 +34,16 @@ import utime
 
 def task_motor1():
     while True:
-        ## A variable that requests for proportional gain from the user.
-        x = input('Input Kp to run step response, input s to stop: ')
-        try:
-            float(x)
-        except:
-            if x == 's':
-                motor_drv1.set_duty_cycle(0)
-                break
-        else:
-            ## A variable that requests for set point from the user.
-            y = input('Input set point: ')
-            controller.set_gain(x)
-            controller.set_setpoint(y)
-            encoder_drv1.zero()
-            ## A variable that initializes the difference between start time and current time.
-            difference = 0
-            ## A variable that marks the start of the timer.
-            start = utime.ticks_ms()
-            while difference <= 1000:
-                ## A variable that creates a timer which marks the current time.
-                current = utime.ticks_ms()
-                difference = current - start
-                ## A variable that defines duty cycle for the controller's run function.
-                duty_cycle = controller.run(encoder_drv1.read())
-                motor_drv1.set_duty_cycle(duty_cycle)
-                utime.sleep_ms(10)
-                time1.put(difference)
-                enc_pos1.put(encoder_drv1.read())
-            ## A variable that initializes the index used for printing encoder position.
-            i = 0
-            motor_drv1.set_duty_cycle(0)
-            for x in time1:
-                print('{:},{:}'.format(time1[i],enc_pos1[i]))
-                i += 1
-            break
-
+        ## A variable that creates a timer which marks the current time.
+        current = utime.ticks_ms()
+        difference = current - start_time.get()
+        ## A variable that defines duty cycle for the controller's run function.
+        duty_cycle = controller.run(encoder_drv1.read())
+        motor_drv1.set_duty_cycle(duty_cycle)
+        time1.put(difference)
+        enc_pos1.put(encoder_drv1.read())
+        print_task.put('{:},{:}\n'.format(difference,encoder_drv1.read()))
+        yield()
 
 def task2_fun ():
     """!
@@ -104,30 +78,67 @@ if __name__ == "__main__":
     # motor_drv2.enable()
     # Set the duty cycle for both motors.
     
+    ## A variable that requests for proportional gain from the user.
+#     x1 = input('Input Kp to run step response, input s to stop: ')
+#     try:
+#         float(x1)
+#     except:
+#         if x == 's':
+#             motor_drv1.set_duty_cycle(0)
+#     else:
+#         ## A variable that requests for set point from the user.
+#         y1 = input('Input set point: ')
+#         controller.set_gain(x1)
+#         controller.set_setpoint(y1)
+#         encoder_drv1.zero()
+    controller.set_gain(0.1)
+    controller.set_setpoint(16384)
+    encoder_drv1.zero()
+            
+#     ## A variable that requests for proportional gain from the user.
+#     Kp_motor1 = task_share.Share ('h', thread_protect = False, name = "Kp1 Share")
+#     x1 = input('Input Kp to run step response, input s to stop: ')
+#     Kp_motor1.put(x1)
+#     
+#     ## A variable that requests for set point from the user.
+#     setpt_motor1 = task_share.Share ('l', thread_protect = False, name = "Set Point Share")
+#     y1 = input('Input set point: ')
+#     setpt_motor1.put(y1)
+    
+#     controller.set_gain(Kp_motor1.get())
+#     controller.set_setpoint(setpt_motor1.get())
+#     encoder_drv1.zero()
+    
+    ## A variable that marks the start of the timer.
+    start_time = task_share.Share ('l', thread_protect = False, name = "Start Time Share")
     ## A variable that creates an empty list to be populated with time data.
-    time1 = []
+    time1 = task_share.Queue ('l', 16, thread_protect = False, overwrite = False,
+                           name = "Time Q 1")
     ## A variable that creates an empty list to be populated with encoder position data.
     enc_pos1 = task_share.Queue ('l', 16, thread_protect = False, overwrite = False,
-                           name = "Encoder Position Q")
+                           name = "Encoder Position Q 1")
     
-    print ('\033[2JTesting ME405 stuff in cotask.py and task_share.py\r\n'
-           'Press ENTER to stop and show diagnostics.')
+#     print ('\033[2JTesting ME405 stuff in cotask.py and task_share.py\r\n'
+#            'Press ENTER to stop and show diagnostics.')
 
     # Create a share and a queue to test function and diagnostic printouts
-    share0 = task_share.Share ('h', thread_protect = False, name = "Share 0")
-    q0 = task_share.Queue ('L', 16, thread_protect = False, overwrite = False,
-                           name = "Queue 0")
+#     share0 = task_share.Share ('h', thread_protect = False, name = "Share 0")
+#     q0 = task_share.Queue ('L', 16, thread_protect = False, overwrite = False,
+#                            name = "Queue 0")
 
     # Create the tasks. If trace is enabled for any task, memory will be
     # allocated for state transition tracing, and the application will run out
     # of memory after a while and quit. Therefore, use tracing only for 
     # debugging and set trace to False when it's not needed
-    task1 = cotask.Task (task1_fun, name = 'Task_1', priority = 1, 
-                         period = 400, profile = True, trace = False)
-    task2 = cotask.Task (task2_fun, name = 'Task_2', priority = 2, 
-                         period = 1500, profile = True, trace = False)
+    task1 = cotask.Task (task_motor1, name = 'Task_Motor1', priority = 1, 
+                         period = 10, profile = True, trace = False)
+    #task2 = cotask.Task (task2_fun, name = 'Task_2', priority = 2, 
+    #                     period = 1500, profile = True, trace = False)
     cotask.task_list.append (task1)
-    cotask.task_list.append (task2)
+    #cotask.task_list.append (task2)
+    
+    task2 = cotask.Task (task_motor1, name = 'Printing', priority = 0)
+    cotask.task_list.append (task2) 
 
     # Run the memory garbage collector to ensure memory is as defragmented as
     # possible before the real-time scheduler is started
@@ -136,14 +147,18 @@ if __name__ == "__main__":
     # Run the scheduler with the chosen scheduling algorithm. Quit if any 
     # character is received through the serial port
     vcp = pyb.USB_VCP ()
+    start_time.put(utime.ticks_ms())
     while not vcp.any ():
         cotask.task_list.pri_sched ()
 
     # Empty the comm port buffer of the character(s) just pressed
     vcp.read ()
+    
+#     motor_drv1.set_duty_cycle(0)
+#     print('{:},{:}'.format(time1.get(),enc_pos1.get()))
 
     # Print a table of task data and a table of shared information data
-    print ('\n' + str (cotask.task_list))
-    print (task_share.show_all ())
-    print (task1.get_trace ())
-    print ('\r\n')
+#     print ('\n' + str (cotask.task_list))
+#     print (task_share.show_all ())
+#     print (task1.get_trace ())
+#     print ('\r\n')
