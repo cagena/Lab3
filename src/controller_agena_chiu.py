@@ -37,6 +37,8 @@ class ControllerDriver:
             error = abs(pos - self.i_set)
         elif pos > self.i_set:
             error = abs(pos - self.i_set)*(-1)
+        elif pos == self.i_set:
+            error = 0
         ## Actuation signal or percent duty cycle to set the motor.
         duty = error*self.K_p
         if duty > 100:

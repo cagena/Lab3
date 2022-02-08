@@ -33,16 +33,19 @@ import print_task
 
 
 def task_motor1():
+    start = utime.ticks_ms()
     while True:
         ## A variable that creates a timer which marks the current time.
         current = utime.ticks_ms()
-        difference = current - start_time.get()
+        difference = current - start
         ## A variable that defines duty cycle for the controller's run function.
         duty_cycle = controller.run(encoder_drv1.read())
         motor_drv1.set_duty_cycle(duty_cycle)
-        time1.put(difference)
-        enc_pos1.put(encoder_drv1.read())
-        print_task.put('{:},{:}\n'.format(difference,encoder_drv1.read()))
+#         time1.put(difference)
+#         enc_pos1.put(encoder_drv1.read())
+        print_task.put('{:},{:}\r\n'.format(difference,encoder_drv1.read()))
+        if difference >= 1500:
+            break
         yield()
 
 def task2_fun ():
@@ -112,11 +115,11 @@ if __name__ == "__main__":
     ## A variable that marks the start of the timer.
     start_time = task_share.Share ('l', thread_protect = False, name = "Start Time Share")
     ## A variable that creates an empty list to be populated with time data.
-    time1 = task_share.Queue ('l', 16, thread_protect = False, overwrite = False,
-                           name = "Time Q 1")
-    ## A variable that creates an empty list to be populated with encoder position data.
-    enc_pos1 = task_share.Queue ('l', 16, thread_protect = False, overwrite = False,
-                           name = "Encoder Position Q 1")
+#     time1 = task_share.Queue ('l', 16, thread_protect = False, overwrite = False,
+#                            name = "Time Q 1")
+#     ## A variable that creates an empty list to be populated with encoder position data.
+#     enc_pos1 = task_share.Queue ('l', 16, thread_protect = False, overwrite = False,
+#                            name = "Encoder Position Q 1")
     
 #     print ('\033[2JTesting ME405 stuff in cotask.py and task_share.py\r\n'
 #            'Press ENTER to stop and show diagnostics.')
@@ -137,8 +140,8 @@ if __name__ == "__main__":
     cotask.task_list.append (task1)
     #cotask.task_list.append (task2)
     
-    task2 = cotask.Task (task_motor1, name = 'Printing', priority = 0)
-    cotask.task_list.append (task2) 
+#     task2 = cotask.Task (task_motor1, name = 'Printing', priority = 0)
+#     cotask.task_list.append (task2) 
 
     # Run the memory garbage collector to ensure memory is as defragmented as
     # possible before the real-time scheduler is started
