@@ -24,6 +24,7 @@ y_val = []
 # Open the serial port to read from it and plot.
 with serial.Serial('COM21', 115200) as f:
     f.write(b'\x03')
+    time.sleep(0.5)
     f.write(b'\x04')
     if b'CTRL-B' in f.readline(-1):
         f.write(b'\x02')
@@ -34,7 +35,7 @@ with serial.Serial('COM21', 115200) as f:
     ## A variable that requests for proportional gain from the user.
     K_p = input('Input Kp to run step response, input s to stop: ')
     f.write(bytes('{:}\r\n'.format(K_p), 'utf8'))
-    time.sleep(0.5)
+    time.sleep(0.25)
 #    Use commented lines below to run the response and change the
 #    set point each time.
 #    set_point = input('Input set point: ')
@@ -46,6 +47,7 @@ with serial.Serial('COM21', 115200) as f:
         raw_data = f.readline()
         ## A variable that separates strings into ordered lists of data.
         data = raw_data.split(b',')
+        print(data)
         try:
             float(data[0])
             float(data[1])

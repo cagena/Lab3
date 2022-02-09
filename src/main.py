@@ -123,9 +123,10 @@ if __name__ == "__main__":
         encoder_drv1.zero()
         # Run the scheduler with the chosen scheduling algorithm. Quit if any 
         # character is received through the serial port
-        vcp = pyb.USB_VCP ()
-        vcp.read()
-        while not vcp.any():
+#         vcp = pyb.USB_VCP ()
+#         vcp.read()
+#         while not vcp.any():
+        while True:
             cotask.task_list.pri_sched ()
 
     # Empty the comm port buffer of the character(s) just pressed

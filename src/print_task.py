@@ -31,7 +31,7 @@ import task_share
 
 ## The size of the buffer which will hold characters to be printed when the
 #  print task has time to print them. 
-BUF_SIZE = const (10000)
+BUF_SIZE = const (5000)
 
 ## A flag which is passed to the queue constructor to control whether the 
 #  queue will protect puts and gets from being corrupted by interrupts. 
