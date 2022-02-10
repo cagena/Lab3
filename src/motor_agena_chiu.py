@@ -45,8 +45,6 @@ class MotorDriver:
         self.pin1.low()
         self.pin2.low()
         
-        print ('Creating a motor driver')
-        
     def enable(self):
         '''!
         Enables the motor, allowing power to it.
