@@ -26,7 +26,6 @@ with serial.Serial('COM21', 115200) as f:
     f.write(b'\x03')
     f.write(b'\x04')
     text = f.readline()
-#     while b'Input Kp' not in text:
     while True:
         if b'CTRL-B' in text:
             f.write(b'\x02')

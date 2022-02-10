@@ -1,19 +1,15 @@
 """!
-@file basic_tasks.py
-    This file contains a demonstration program that runs some tasks, an
-    inter-task shared variable, and a queue. The tasks don't really @b do
-    anything; the example just shows how these elements are created and run.
-
-@author JR Ridgely
-@date   2021-Dec-15 JRR Created from the remains of previous example
-@copyright (c) 2015-2021 by JR Ridgely and released under the GNU
-    Public License, Version 2. 
+@file main.py
+This is the main file for Lab 3, it contains a program that runs two motor tasks which includes closed loop control
+for each motor. The code was adapted from Dr. Ridgely's basic task example.
+@author Corey Agena
+@author Luisa Chiu
+@date 2-9-2022
 """
 
 import gc
 import pyb
 import cotask
-import task_share
 import encoder_agena_chiu
 import motor_agena_chiu
 import controller_agena_chiu
@@ -21,8 +17,11 @@ import utime
 import print_task
 
 def task_motor1():
+    ## The variable that calculates change in time.
     difference = 0
+    ## The variable that marks the start of the timer.
     start = utime.ticks_ms()
+    ## The variable that indicates if the current run is the initial run of the loop.
     runs1 = 0
     while True:
         ## A variable that creates a timer which marks the current time.
@@ -42,9 +41,10 @@ def task_motor1():
         yield()
 
 def task_motor2():
+    ## The variable that calculates change in time.
     difference = 0
+    ## The variable that marks the start of the timer.
     start = utime.ticks_ms()
-    runs2 = 0
     while True:
         ## A variable that creates a timer which marks the current time.
         current = utime.ticks_ms()
@@ -55,8 +55,8 @@ def task_motor2():
         if difference >= 1500:
             motor_drv2.disable()
         # The print portion is commented out for the second motor.
-#         if difference <= 1500:
-#             print_task.put('{:},{:}\r\n'.format(difference,encoder_drv2.read()))
+            # if difference <= 1500:
+            # print_task.put('{:},{:}\r\n'.format(difference,encoder_drv2.read()))
         yield()
 
 # This code creates a share, a queue, and two tasks, then starts the tasks. The
@@ -112,7 +112,4 @@ if __name__ == "__main__":
         while True:
             # Run the scheduler with the chosen scheduling algorithm. 
             cotask.task_list.pri_sched ()
-
-    # Empty the comm port buffer of the character(s) just pressed
-    vcp.read ()
     
