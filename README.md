@@ -13,7 +13,7 @@ other tasks. The implementation of tasks and the multitasking system allowed for
 simultaneously. Before the two motors were run the motor attached to a flywheel was tested to see how period
 affected the response. Period being a new parameter used in the task manager.
 
-The plots below depict our step response system using the following periods: 10, 20, and 30ms.
+The plots below depict our step response system using the following periods: 10, 20, 30, and 40ms.
 
 
 The figure below shows our step response using a 10ms period.
@@ -44,6 +44,16 @@ The figure below shows our step response using a 30ms period.
 The plot above shows the motor step response having more oscillation. The time duration for this step response
 to reach the steady state was longer and the plot is much more rough. Compared to the previous two plots,
 this response is undesirable.
+
+
+The figure below shows our step response using a 40ms period.
+
+![alt text](T=40.png)
+
+**Figure 4. Plot of position[ticks] vs. time[ms]; T = 40ms.**
+
+Figure 4 shows that the step response gets worse, this period shows that the difference between a good period and a
+bad one can be drastic.
 
 To conclude, we learned that increasing the period past 20 makes the response undesirable. With the data that
 we found a good period is between 10ms and 15ms. This is where the time to steady-state, oscillation, and
