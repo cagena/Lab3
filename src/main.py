@@ -65,11 +65,11 @@ def task_motor2():
 if __name__ == "__main__":
     ## A variable that creates a encoder driver for encoder 1.
     encoder_drv1 = encoder_agena_chiu.EncoderDriver(pyb.Pin.cpu.B6, pyb.Pin.cpu.B7, 4)
-    # A variable that creates a encoder driver for encoder 2.
+    ## A variable that creates a encoder driver for encoder 2.
     encoder_drv2 = encoder_agena_chiu.EncoderDriver(pyb.Pin.cpu.C6, pyb.Pin.cpu.C7, 8)
     ## A variable that creates a motor driver for motor 1.
     motor_drv1 = motor_agena_chiu.MotorDriver(pyb.Pin.cpu.A10, pyb.Pin.cpu.B4, pyb.Pin.cpu.B5, 3)
-    # A variable that creates a motor driver for motor 2.
+    ## A variable that creates a motor driver for motor 2.
     motor_drv2 = motor_agena_chiu.MotorDriver(pyb.Pin.cpu.C1, pyb.Pin.cpu.A0, pyb.Pin.cpu.A1, 5)
     ## A variable that creates a controller driver for motor 1.
     controller_1 = controller_agena_chiu.ControllerDriver(0, 0)

@@ -5,5 +5,6 @@ var searchData=
   ['me_20405_20lab_203_2',['ME 405 Lab 3',['../index.html',1,'']]],
   ['motor_5fagena_5fchiu_2epy_3',['motor_agena_chiu.py',['../motor__agena__chiu_8py.html',1,'']]],
   ['motor_5fdrv1_4',['motor_drv1',['../main_8py.html#a4751714e63c395eb4c1db46bffd3936c',1,'main']]],
-  ['motordriver_5',['MotorDriver',['../classmotor__agena__chiu_1_1_motor_driver.html',1,'motor_agena_chiu']]]
+  ['motor_5fdrv2_5',['motor_drv2',['../main_8py.html#ab484fede18af8cc04f85ce71f9cf814a',1,'main']]],
+  ['motordriver_6',['MotorDriver',['../classmotor__agena__chiu_1_1_motor_driver.html',1,'motor_agena_chiu']]]
 ];

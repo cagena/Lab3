@@ -25,6 +25,7 @@ y_val = []
 with serial.Serial('COM21', 115200) as f:
     f.write(b'\x03')
     f.write(b'\x04')
+    ## A variable used to hold lines read from the serial port.
     text = f.readline()
     while True:
         if b'CTRL-B' in text:
